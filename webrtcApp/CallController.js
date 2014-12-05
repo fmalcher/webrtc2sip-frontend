@@ -9,18 +9,26 @@
 	
 	function CallController($scope) {		
 		$scope.stack = null;
+		
+		$scope.initialized = 0;
+		$scope.registered = 0;
+		
 		$scope.eventsListener = eventsListener;
+		$scope.createSipStack = createSipStack;
+		$scope.sipUnregister = sipUnregister;
 		
 		var registerSession;
 		
+		///////////////////
+		
 		init();
-		
-		
+
 		
 		
 		function init(){
 			var readyCallback = function(e){
-				createSipStack();
+				$scope.initialized = 1;
+				//createSipStack();
 			};
 			var errorCallback = function(e){
 				console.error('Failed to initialize the engine: ' + e.message);
@@ -33,7 +41,7 @@
 		
 		function eventsListener(e){
 			if(e.type == 'started'){
-				login();
+				sipRegister();
 			}
 			else if(e.type == 'i_new_call'){ // incoming audio/video call
 				//acceptCall(e);
@@ -42,11 +50,21 @@
 		
 		
 		
-		function login(){
+		function sipRegister(){
+			var retval;
+			
 			registerSession = $scope.stack.newSession('register', {
 				events_listener: { events: '*', listener: eventsListener } // optional: '*' means all events
 			});
-			registerSession.register();
+			retval = registerSession.register();
+			if(retval) $scope.registered = 1;
+		}
+		
+		
+		function sipUnregister(){
+			if($scope.stack) {
+				$scope.stack.stop();
+			}
 		}
 		
 		
@@ -59,8 +77,9 @@
 				impu: SIPcred.impu,
 				password: SIPcred.password,
 				display_name: '',
-				websocket_proxy_url: 'ws://192.168.178.37:10060',
-				outbound_proxy_url: '',
+				websocket_proxy_url: SIPcred.websocket_proxy_url,
+				outbound_proxy_url: SIPcred.outbound_proxy_url,
+				ice_servers: SIPcred.ice_servers, 
 				enable_rtcweb_breaker: true,
 				events_listener: { events: '*', listener: $scope.eventsListener },
 				sip_headers: [
