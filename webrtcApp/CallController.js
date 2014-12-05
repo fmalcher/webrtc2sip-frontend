@@ -12,15 +12,10 @@
 		$scope.alert = null;
 		
 		
+		$scope.initialized = 0;
 		$scope.registered = 0;
-		
-		$scope.btnConnect = {
-			disabled: 1
-		};
-		
-		$scope.btnDisconnect = {
-			disabled: 1
-		};
+			
+
 		
 		$scope.createSipStack = createSipStack;
 		$scope.sipUnregister = sipUnregister;
@@ -30,6 +25,8 @@
 		var registerSession;
 		var callSession;
 		
+		$scope.registerSession = registerSession;
+		
 		///////////////////
 		
 		init();
@@ -38,7 +35,7 @@
 		
 		function init(){
 			var readyCallback = function(e){
-				$scope.btnConnect.disabled = 0;
+				$scope.initialized = 1;
 			};
 			var errorCallback = function(e){
 				console.error('Failed to initialize the engine: ' + e.message);
@@ -53,16 +50,11 @@
 			if($scope.stack) {
 				$scope.stack.stop();
 				
-				$scope.btnConnect.disabled = 0;
-				$scope.btnDisconnect.disabled = 1;
+				$scope.registered = 0;
 			}
 		}
 		
 		function createSipStack(){
-			$scope.btnConnect.disabled = 1;
-			$scope.btnDisconnect.disabled = 0;
-			
-			
 			
 			$scope.stack = new SIPml.Stack({
 				realm: SIPcred.realm,
@@ -82,6 +74,8 @@
 			});
 			
 			$scope.stack.start();
+			
+			$scope.registered = 1;
 			
 		}
 		
