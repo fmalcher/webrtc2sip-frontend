@@ -15,10 +15,19 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li>
-        	<button ng-class="{ 'disabled' : !initialized }" ng-if="!registered" type="button" class="btn btn-success navbar-btn" ng-click="createSipStack()">Connect</button>
-        	<button ng-if="registered" type="button" class="btn btn-danger navbar-btn" ng-click="sipUnregister()">Disconnect</button>
+        	<button ng-class="{ 'disabled' : btnConnect.disabled }" type="button" class="btn btn-success navbar-btn" ng-click="createSipStack()">Connect</button>
+        	<button ng-class="{ 'disabled' : btnDisconnect.disabled }" type="button" class="btn btn-danger navbar-btn" ng-click="sipUnregister()">Disconnect</button>
+        </li>
+        <li>
+        	{{ registered }}
         </li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+
+<div ng-if="alert" class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  {{ alert }}
+</div>
+
