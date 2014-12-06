@@ -5,16 +5,18 @@
 		.module('webrtcApp')
 		.controller('CallController', CallController);
 	
-	CallController.$inject = ['$scope'];
+	CallController.$inject = ['$scope', '$rootScope', 'scopeService'];
 	
-	function CallController($scope) {		
+	function CallController($scope, $rootScope, scopeService) {		
 		$scope.stack = null;
 		$scope.alert = null;
 		
 		
-		$scope.initialized = 0;
-		$scope.registered = 0;
-			
+		$scope.state = {
+			initialized: 0,
+			registering: 0,
+			registered: 0
+		};
 
 		
 		$scope.createSipStack = createSipStack;
@@ -26,6 +28,7 @@
 		var callSession;
 		
 		$scope.registerSession = registerSession;
+
 		
 		///////////////////
 		
@@ -35,7 +38,7 @@
 		
 		function init(){
 			var readyCallback = function(e){
-				$scope.initialized = 1;
+				setState('initialized', 1);
 			};
 			var errorCallback = function(e){
 				console.error('Failed to initialize the engine: ' + e.message);
@@ -47,10 +50,10 @@
 		
 		
 		function sipUnregister(){
-			if($scope.stack) {
+			if(registerSession) {
+				registerSession.unregister();
+			}else{
 				$scope.stack.stop();
-				
-				$scope.registered = 0;
 			}
 		}
 		
@@ -75,27 +78,24 @@
 			
 			$scope.stack.start();
 			
-			$scope.registered = 1;
-			
 		}
 		
 		
 		
 		//Callback function for SIP Stacks
 	    function onEventsStack(e) {
+	        console.log("STACK EVENT FIRED: " + e.type);
+	        
 	        switch (e.type) {
+	            
 	            case 'started': {
 
-                    $scope.registered = 1;
-
-                    
-                    
                     // catch exception for IE (DOM not ready)
                     try {
                         // LogIn (REGISTER) as soon as the stack finish starting
                         registerSession = $scope.stack.newSession('register', {
                             expires: 200,
-                            events_listener: { events: '*', listener: onEventsStack },
+                            events_listener: { events: '*', listener: onEventsRegister },
                             sip_caps: [
                                 { name: '+g.oma.sip-im', value: null },
                                 { name: '+audio', value: null },
@@ -106,12 +106,17 @@
                     }
                     catch (e) {
                         $scope.alert = "<b>1:" + e + "</b>";
-                        //$scope.registered = 0;
                     }
                     break;
 	            }
 	            
-	            case 'stopping': case 'stopped': case 'failed_to_start': case 'failed_to_stop': {
+	            case 'stopped': {
+		            setState('registered', 0);
+		            break;
+	            }
+	            
+	            
+	            case 'stopping': case 'failed_to_start': case 'failed_to_stop': {
                     var bFailure = (e.type == 'failed_to_start') || (e.type == 'failed_to_stop');
                     
                     $scope.stack = null;
@@ -172,44 +177,44 @@
 	        }
 	    };
 	
+	
+	
+		function onEventsRegister(e){
+			console.log("REGISTER EVENT FIRED: " + e.type);
+			
+			
+			switch (e.type) {
+				
+				case 'connecting': {
+	               	setState('registering', 1);
+					break;
+				}
+				
+				case 'connected': {
+	               	setState('registering', 0);
+	               	setState('registered', 1);
+					break;
+				}
+				
+				case 'terminated': {
+					$scope.stack.stop();
+				}
+			}
+		}
+	
+	
+	
 	    // Callback function for SIP sessions (INVITE, REGISTER, MESSAGE...)
 	    function onEventsSession(e /* SIPml.Session.Event */) {
-	
-	        /*switch (e.type) {
-	            case 'connecting': case 'connected':
-	                {
-	                    var bConnected = (e.type == 'connected');
-	                    if (e.session == oSipSessionRegister) {
-	                        uiOnConnectionEvent(bConnected, !bConnected);
-	                        txtRegStatus.innerHTML = "<i>" + e.description + "</i>";
-	                    }
-	                    else if (e.session == oSipSessionCall) {
-	                        btnHangUp.value = 'HangUp';
-	                        btnCall.disabled = true;
-	                        btnHangUp.disabled = false;
-	                        btnTransfer.disabled = false;
-	
-	                        if (bConnected) {
-	                            stopRingbackTone();
-	                            stopRingTone();
-	
-	                            if (oNotifICall) {
-	                                oNotifICall.cancel();
-	                                oNotifICall = null;
-	                            }
-	                        }
-	
-	                        txtCallStatus.innerHTML = "<i>" + e.description + "</i>";
-	                        divCallOptions.style.opacity = bConnected ? 1 : 0;
-	
-	                        if (SIPml.isWebRtc4AllSupported()) { // IE don't provide stream callback
-	                            uiVideoDisplayEvent(true, true);
-	                            uiVideoDisplayEvent(false, true);
-	                        }
-	                    }
-	                    break;
-	                } // 'connecting' | 'connected'
-	            case 'terminating': case 'terminated':
+			console.log("SESSION EVENT FIRED: " + e.type);
+			
+	        switch (e.type) {
+				case 'connected': {
+					
+				}
+			}
+				/*
+				case 'terminating': case 'terminated':
 	                {
 	                    if (e.session == oSipSessionRegister) {
 	                        uiOnConnectionEvent(false, false);
@@ -418,6 +423,14 @@
 	                    break;
 	                }
 	        }*/
+	    }
+	    
+	    
+	    function setState(key, val){
+		    scopeService.safeApply($rootScope, function(){
+			    $scope.state[key] = val;
+		    });
+		    return;
 	    }
 		
 		
