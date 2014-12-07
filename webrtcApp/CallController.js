@@ -25,9 +25,9 @@
 		$scope.sipCall = sipCall;
 		$scope.sipHangup = sipHangup;
 		
-		$scope.calleeNumber = "03413062286";
-		$scope.enableOIR = {
-			enabled: true
+		$scope.callOptions = {
+			calleeNumber: "03413062286",
+			enableOIR: true
 		};
 		
 		var onEventsStack;
@@ -221,13 +221,13 @@
 	            var tempCallConfig = callConfig;
 	            
 	            //OIR is enabled, hide my number
-	            if($scope.enableOIR.enabled){
+	            if($scope.callOptions.enableOIR){
 		            tempCallConfig.from = 'anonymous@' + SIPcred.realm;
 				}
 	            
 	            callSession = $scope.stack.newSession('call-audio', tempCallConfig);
 	            // make call
-	            if (callSession.call($scope.calleeNumber) != 0) {
+	            if (callSession.call($scope.callOptions.calleeNumber) != 0) {
 	                callSession = null;
 	                $scope.alert = "Error...";
 
