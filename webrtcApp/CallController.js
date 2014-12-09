@@ -23,6 +23,7 @@
 		$scope.createSipStack = createSipStack;
 		$scope.sipUnregister = sipUnregister;
 		$scope.sipCall = sipCall;
+		$scope.sipCallAnswer = sipCallAnswer;
 		$scope.sipHangup = sipHangup;
 		
 		$scope.callOptions = {
@@ -122,6 +123,9 @@
 	            
 	            case 'stopped': {
 		            setState('registered', 0);
+		            setState('registering', 0);
+		            setState('call', 0);
+		            setState('incomingCall', 0);
 		            break;
 	            }
 	            
@@ -150,12 +154,13 @@
                     if(callSession) {
                         e.newSession.hangup();
                     } else {
-                        setState('incomingCall', 1);
-                        
                         callSession = e.newSession;
                         callSession.setConfiguration(callConfig);
 
                         var sRemoteNumber = (callSession.getRemoteFriendlyName() || 'unknown');
+                        
+                        setState('incomingCall', 1);
+                        
                     }
                     break;
                 }
@@ -217,15 +222,16 @@
 	        if ($scope.stack && !callSession) {
 
 	            // create call session
-	            
-	            var tempCallConfig = callConfig;
+	            var thisCallConfig = callConfig;
 	            
 	            //OIR is enabled, hide my number
 	            if($scope.callOptions.enableOIR){
-		            tempCallConfig.from = 'anonymous@' + SIPcred.realm;
+		            thisCallConfig.from = 'anonymous@' + SIPcred.realm;
+				}else{
+					thisCallConfig.from = SIPcred.impu;
 				}
 	            
-	            callSession = $scope.stack.newSession('call-audio', tempCallConfig);
+	            callSession = $scope.stack.newSession('call-audio', thisCallConfig);
 	            // make call
 	            if (callSession.call($scope.callOptions.calleeNumber) != 0) {
 	                callSession = null;
@@ -234,10 +240,18 @@
 	                return;
 	            }
 	        }
-	        else if(callSession) {
+	    }
+	    
+	    
+	    
+	    
+	    function sipCallAnswer(){
+		    if(callSession) {
 	            callSession.accept(callConfig);
 	        }
+	        return;
 	    }
+	    
 	    
 	    
 	    function sipHangup(){
