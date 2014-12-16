@@ -80,6 +80,26 @@
 			</div>
 		</div>
 		
+		<div ng-if="state.call" class="row" style="margin-top: 20px;">
+			<div class="col-md-4 col-md-offset-4" style="text-align: center;">
+				<button ng-click="sipTransfer()" type="button" class="btn btn-primary">
+					<span class="glyphicon glyphicon-share-alt"></span>
+					<span>Transfer call</span>
+				</button>
+				
+				<button ng-click="sipHold()" ng-if="!state.hold" type="button" class="btn btn-primary">
+					<span class="glyphicon glyphicon-pause"></span>
+					<span>Hold</span>
+				</button>
+				
+				<button ng-click="sipResume()" ng-if="state.hold" type="button" class="btn btn-primary">
+					<span class="glyphicon glyphicon-play"></span>
+					<span>Resume</span>
+				</button>
+				
+			</div>
+		</div>
+		
 		
 	</div>
 	

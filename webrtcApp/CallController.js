@@ -13,11 +13,17 @@
 		
 		
 		$scope.state = {
+			initializing: 0,
 			initialized: 0,
 			registering: 0,
 			registered: 0,
+			unregistering: 0,
+			incomingCall: 0,
+			outgoingCall: 0,
 			call: 0,
-			incomingCall: 0
+			hold: 0,
+			held: 0,
+			resume: 0
 		};
 		
 		$scope.createSipStack = createSipStack;
@@ -25,15 +31,19 @@
 		$scope.sipCall = sipCall;
 		$scope.sipCallAnswer = sipCallAnswer;
 		$scope.sipHangup = sipHangup;
+		$scope.sipTransfer = sipTransfer;
+		$scope.sipHold = sipHold;
+		$scope.sipResume = sipResume;
 		
 		$scope.callOptions = {
 			calleeNumber: "03413062286",
-			enableOIR: true
+			enableOIR: false
 		};
 		
 		var onEventsStack;
 		var onEventsCall;
 		var onEventsRegister;
+		
 		var registerSession;
 		var callSession;
 		
@@ -60,6 +70,8 @@
 		
 		
 		function sipUnregister(){
+			setState('unregistering', 1);
+			
 			if(registerSession) {
 				registerSession.unregister();
 			}else{
@@ -116,7 +128,7 @@
                         registerSession.register();
                     }
                     catch (e) {
-                        $scope.alert = "<b>1:" + e + "</b>";
+	                    
                     }
                     break;
 	            }
@@ -124,8 +136,13 @@
 	            case 'stopped': {
 		            setState('registered', 0);
 		            setState('registering', 0);
+		            setState('unregistering', 0);
 		            setState('call', 0);
 		            setState('incomingCall', 0);
+		            setState('outgoingCall', 0);
+		            setState('hold', 0);
+		            setState('held', 0);
+		            setState('resume', 0);
 		            break;
 	            }
 	            
@@ -151,13 +168,15 @@
                 }
 	
 	            case 'i_new_call': {
-                    if(callSession) {
+                    if(callSession) { //do not accept incoming call if there's another active callSession
                         e.newSession.hangup();
                     } else {
                         callSession = e.newSession;
                         callSession.setConfiguration(callConfig);
 
                         var sRemoteNumber = (callSession.getRemoteFriendlyName() || 'unknown');
+                        
+                        console.log("INCOMING CALL: " + sRemoteNumber);
                         
                         setState('incomingCall', 1);
                         
@@ -226,9 +245,14 @@
 	            
 	            //OIR is enabled, hide my number
 	            if($scope.callOptions.enableOIR){
-		            thisCallConfig.from = 'anonymous@' + SIPcred.realm;
+		            
+		            thisCallConfig.sip_headers = [
+						{ name: 'P-Preferred-Identity', value: '<' + SIPcred.impu + '>', session: false },
+						{ name: 'Privacy', value: 'header', session: false }
+					];
+		            
 				}else{
-					thisCallConfig.from = SIPcred.impu;
+					thisCallConfig.sip_headers = [];
 				}
 	            
 	            callSession = $scope.stack.newSession('call-audio', thisCallConfig);
@@ -245,7 +269,7 @@
 	    
 	    
 	    
-	    function sipCallAnswer(){
+	    function sipCallAnswer() {
 		    if(callSession) {
 	            callSession.accept(callConfig);
 	        }
@@ -254,10 +278,42 @@
 	    
 	    
 	    
-	    function sipHangup(){
-		    if(callSession){
+	    function sipHangup() {
+		    if(callSession) {
 			    callSession.hangup();
 		    }
+	    }
+	    
+	    
+	    function sipHold() {
+		    if(callSession) {
+			    callSession.hold();
+			    setState("hold", 1);
+		    }
+	    }
+	    
+	    function sipResume() {
+		    if(callSession) {
+			    callSession.resume();
+			    setState("hold", 0);
+		    }
+	    }
+	    
+	    
+
+
+		function sipTransfer() {
+	        if(callSession) {
+	            var destNumber = prompt('Enter destination number', '');
+	            console.log("Now initiating transfer to " + destNumber);
+	            if(destNumber) {
+		            
+	                if(callSession.transfer(destNumber) != 0) {
+						$scope.alert = "Call forwarding failed..."
+	                    return;
+	                }
+	            }
+	        }
 	    }
 
 	    
@@ -281,10 +337,6 @@
 				{ name: '+g.oma.sip-im' },
 				{ name: '+sip.ice' },
 				{ name: 'language', value: '\"en,de\"' }
-			],
-			sip_headers: [
-				{ name: 'P-Preferred-Identity', value: '<sip:034146265214@tel.t-online.de>', session: false },
-				{ name: 'Privacy', value: 'header', session: false }
 			]
         };
 		
