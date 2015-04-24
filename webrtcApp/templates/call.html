@@ -16,13 +16,13 @@
       <ul class="nav navbar-nav navbar-right">
 
 	  	<li>
-	  		<span ng-if="state.registered">Connected</span>
-	  		<span ng-if="!state.registered">Disconnected</span>
+	  		<p class="navbar-text" ng-if="state.registered">Connected</p>
+	  		<p class="navbar-text" ng-if="!state.registered">Disconnected</p>
 	  	</li>
 
         <li>
-        	<button ng-class="{ 'disabled' : !state.initialized || state.registered }" type="button" class="btn btn-success navbar-btn" ng-click="createSipStack()">Connect</button>
-        	<button ng-class="{ 'disabled' : !state.initialized || !state.registered }" type="button" class="btn btn-danger navbar-btn" ng-click="sipUnregister()">Disconnect</button>
+        	<button ng-class="{ 'disabled' : !state.initialized || state.registered }" type="button" class="btn btn-success navbar-btn" ng-click="createSipStack()">Register</button>
+        	<button ng-class="{ 'disabled' : !state.initialized || !state.registered }" type="button" class="btn btn-danger navbar-btn" ng-click="sipUnregister()">Unregister</button>
         </li>
         
         
