@@ -11,6 +11,10 @@
 		$scope.stack = null;
 		$scope.alert = null;
 		
+		$scope.SIPcred = SIPcred;
+		$scope.curSIPcred = $scope.SIPcred[0];
+		
+		
 		
 		$scope.state = {
 			initializing: 0,
@@ -26,6 +30,7 @@
 			resume: 0
 		};
 		
+		$scope.setCred = setCred;
 		$scope.createSipStack = createSipStack;
 		$scope.sipUnregister = sipUnregister;
 		$scope.sipCall = sipCall;
@@ -52,6 +57,17 @@
 		
 		///////////////////
 		
+		function setCred(index){
+			if(!$scope.SIPcred[index]) return false;
+
+			$scope.curSIPcred = $scope.SIPcred[index];
+			sipUnregister();
+			//createSipStack();
+		}
+	
+		
+		
+		
 		init();
 
 		
@@ -70,6 +86,8 @@
 		
 		
 		function sipUnregister(){
+			if(!$scope.stack) return false;
+			
 			setState('unregistering', 1);
 			
 			if(registerSession) {
@@ -82,15 +100,17 @@
 		
 		function createSipStack(){
 			
+			var cred = $scope.curSIPcred;
+			
 			$scope.stack = new SIPml.Stack({
-				realm: SIPcred.realm,
-				impi: SIPcred.impi,
-				impu: SIPcred.impu,
-				password: SIPcred.password,
+				realm: cred.realm,
+				impi: cred.impi,
+				impu: cred.impu,
+				password: cred.password,
 				display_name: '',
-				websocket_proxy_url: SIPcred.websocket_proxy_url,
-				outbound_proxy_url: SIPcred.outbound_proxy_url,
-				ice_servers: SIPcred.ice_servers, 
+				websocket_proxy_url: SIPcredGlobal.websocket_proxy_url,
+				outbound_proxy_url: SIPcredGlobal.outbound_proxy_url,
+				ice_servers: SIPcredGlobal.ice_servers, 
 				enable_rtcweb_breaker: true,
 				events_listener: { events: '*', listener: onEventsStack },
 				sip_headers: [
@@ -117,13 +137,13 @@
                     try {
                         // LogIn (REGISTER) as soon as the stack finish starting
                         registerSession = $scope.stack.newSession('register', {
-                            expires: 200,
+                            expires: 86400,
                             events_listener: { events: '*', listener: onEventsRegister },
-                            sip_caps: [
+                            /*sip_caps: [
                                 { name: '+g.oma.sip-im', value: null },
                                 { name: '+audio', value: null },
                                 { name: 'language', value: '\"en,de\"' }
-                            ]
+                            ]*/
                         });
                         registerSession.register();
                     }
