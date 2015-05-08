@@ -21,8 +21,8 @@
 	  	</li>
 
         <li>
-        	<button ng-class="{ 'disabled' : !state.initialized || state.registered }" type="button" class="btn btn-success navbar-btn" ng-click="createSipStack()">Register</button>
-        	<button ng-class="{ 'disabled' : !state.initialized || !state.registered }" type="button" class="btn btn-danger navbar-btn" ng-click="sipUnregister()">Unregister</button>
+        	<button ng-class="{ 'disabled' : !state.initialized || state.registered }" type="button" class="btn btn-success navbar-btn" ng-click="createSipStack()"><span class="glyphicon glyphicon-log-in"></span> Register</button>
+        	<button ng-class="{ 'disabled' : !state.initialized || !state.registered }" type="button" class="btn btn-danger navbar-btn" ng-click="sipUnregister()"><span class="glyphicon glyphicon-log-out"></span> Unregister</button>
         </li>
         
         
