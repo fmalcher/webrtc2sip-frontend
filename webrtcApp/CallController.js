@@ -63,7 +63,6 @@
 
 			$scope.curSIPcred = $scope.SIPcred[index];
 			sipUnregister();
-			//createSipStack();
 		}
 	
 		
@@ -176,7 +175,6 @@
                     callSession = null;
                     suppSession = null;
 
-                    //uiOnConnectionEvent(false, false);
 
                     //stopRingbackTone();
                     //stopRingTone();
@@ -255,36 +253,6 @@
 			}
 			
 	    }
-	    
-	    
-	    
-	    function onEventsSupp(e) {
-			console.log("SUPP EVENT FIRED: " + e.type);
-			
-			switch (e.type) {
-				case 'connected': {
-					e.session.hangup();
-					break;
-				}
-				
-				case 'terminated': {
-					break;
-				}
-			}
-			
-	    }
-	    
-	    
-	    
-		function enableAws(){
-			var suppSession = $rootScope.stack.newSession('call-audio', {
-				events_listener: { events: '*', listener: onEventsSupp }
-			});
-			suppSession.call('*21*016093746952%23');
-		}
-	    
-	    
-	    
 	    
 	    // makes a call (SIP INVITE)
 	    function sipCall() {
