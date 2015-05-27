@@ -5,11 +5,19 @@
 		.module('webrtcApp')
 		.controller('CallController', CallController);
 	
-	CallController.$inject = ['$scope', '$rootScope', '$modal', 'scopeService'];
+	CallController.$inject = ['$scope', '$rootScope', '$modal', 'scopeService', 'ngAudio'];
 	
-	function CallController($scope, $rootScope, $modal, scopeService) {		
+	function CallController($scope, $rootScope, $modal, scopeService, ngAudio) {		
 		$rootScope.stack = null;
 		$scope.alert = null;
+		
+		$scope.sound = {};
+		$scope.sound.calling = ngAudio.load('media/calling.mp3');
+		$scope.sound.calling.loop = true;
+		
+		$scope.sound.ringing = ngAudio.load('media/ringing.mp3');
+		$scope.sound.ringing.loop = true;
+		
 		
 		$scope.SIPcred = SIPcred;
 		$scope.curSIPcred = $scope.SIPcred[0];
@@ -38,7 +46,6 @@
 		$scope.sipTransfer = sipTransfer;
 		$scope.sipHold = sipHold;
 		$scope.sipResume = sipResume;
-		$scope.enableAws = enableAws;
 		
 		$scope.callOptions = {
 			calleeNumber: "03413062286",
@@ -163,6 +170,7 @@
 		            setState('hold', 0);
 		            setState('held', 0);
 		            setState('resume', 0);
+		            
 		            break;
 	            }
 	            
@@ -175,15 +183,8 @@
                     callSession = null;
                     suppSession = null;
 
-
-                    //stopRingbackTone();
-                    //stopRingTone();
-
-                    //uiVideoDisplayShowHide(false);
-                    //divCallOptions.style.opacity = 0;
-
-                    //txtCallStatus.innerHTML = '';
-                    //txtRegStatus.innerHTML = bFailure ? "<i>Disconnected: <b>" + e.description + "</b></i>" : "<i>Disconnected</i>";
+                    $scope.sound.calling.stop();
+                    $scope.sound.ringing.stop();
                     break;
                 }
 	
@@ -199,7 +200,7 @@
                         console.log("INCOMING CALL: " + sRemoteNumber);
                         
                         setState('incomingCall', 1);
-                        
+                        $scope.sound.ringing.play();
                     }
                     break;
                 }
@@ -239,15 +240,28 @@
 			console.log("CALL EVENT FIRED: " + e.type);
 			
 			switch (e.type) {
+				case 'm_early_media': {
+					$scope.sound.calling.stop();
+				}
+				
 				case 'connected': {
 					setState('incomingCall', 0);
 					setState('call', 1);
+					$scope.sound.calling.stop();
+					$scope.sound.ringing.stop();
+					break;
+				}
+				
+				case 'i_ao_request': {
+					$scope.sound.calling.play();
 					break;
 				}
 				
 				case 'terminated': {
 					callSession = null;
 					setState('call', 0);
+					$scope.sound.calling.stop();
+					$scope.sound.ringing.stop();
 					break;
 				}
 			}
@@ -275,7 +289,7 @@
 	            
 	            callSession = $rootScope.stack.newSession('call-audio', thisCallConfig);
 	            // make call
-	            if (callSession.call($scope.callOptions.calleeNumber) != 0) {
+	            if(callSession.call($scope.callOptions.calleeNumber) != 0){
 	                callSession = null;
 	                $scope.alert = "Error...";
 
