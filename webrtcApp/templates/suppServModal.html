@@ -1,0 +1,24 @@
+<div class="modal-header">
+	<h3 class="modal-title">Supplementary Services</h3>
+</div>
+<div class="modal-body">
+	
+<h4>Call Forwarding Unconditional</h4>
+	<div class="input-group">
+      <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-share-alt"></span></span>
+      <input ng-model="fields.cfudest" type="text" class="form-control" placeholder="Destination number">
+      <span class="input-group-btn">
+        <button ng-click="suppServ('cfuenable')" class="btn btn-success" type="button">Enable</button>
+        <button ng-click="suppServ('cfudisable')" class="btn btn-warning" type="button">Disable</button>
+      </span>
+    </div>
+	
+</div>
+
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="ok()">Close</button>
+</div>
+
+
+
+

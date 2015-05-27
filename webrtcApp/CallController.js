@@ -5,15 +5,14 @@
 		.module('webrtcApp')
 		.controller('CallController', CallController);
 	
-	CallController.$inject = ['$scope', '$rootScope', 'scopeService'];
+	CallController.$inject = ['$scope', '$rootScope', '$modal', 'scopeService'];
 	
-	function CallController($scope, $rootScope, scopeService) {		
-		$scope.stack = null;
+	function CallController($scope, $rootScope, $modal, scopeService) {		
+		$rootScope.stack = null;
 		$scope.alert = null;
 		
 		$scope.SIPcred = SIPcred;
 		$scope.curSIPcred = $scope.SIPcred[0];
-		
 		
 		
 		$scope.state = {
@@ -39,6 +38,7 @@
 		$scope.sipTransfer = sipTransfer;
 		$scope.sipHold = sipHold;
 		$scope.sipResume = sipResume;
+		$scope.enableAws = enableAws;
 		
 		$scope.callOptions = {
 			calleeNumber: "03413062286",
@@ -51,6 +51,7 @@
 		
 		var registerSession;
 		var callSession;
+		var suppSession;
 		
 		$scope.registerSession = registerSession;
 
@@ -86,14 +87,14 @@
 		
 		
 		function sipUnregister(){
-			if(!$scope.stack) return false;
+			if(!$rootScope.stack) return false;
 			
 			setState('unregistering', 1);
 			
 			if(registerSession) {
 				registerSession.unregister();
 			}else{
-				$scope.stack.stop();
+				$rootScope.stack.stop();
 			}
 		}
 		
@@ -102,7 +103,7 @@
 			
 			var cred = $scope.curSIPcred;
 			
-			$scope.stack = new SIPml.Stack({
+			$rootScope.stack = new SIPml.Stack({
 				realm: cred.realm,
 				impi: cred.impi,
 				impu: cred.impu,
@@ -119,7 +120,7 @@
 				]
 			});
 			
-			$scope.stack.start();
+			$rootScope.stack.start();
 			
 		}
 		
@@ -133,10 +134,10 @@
 	            
 	            case 'started': {
 
-                    // catch exception for IE (DOM not ready)
+                    //catch exception for IE (DOM not ready)
                     try {
                         // LogIn (REGISTER) as soon as the stack finish starting
-                        registerSession = $scope.stack.newSession('register', {
+                        registerSession = $rootScope.stack.newSession('register', {
                             expires: 86400,
                             events_listener: { events: '*', listener: onEventsRegister },
                             /*sip_caps: [
@@ -170,9 +171,10 @@
 	            case 'stopping': case 'failed_to_start': case 'failed_to_stop': {
                     var bFailure = (e.type == 'failed_to_start') || (e.type == 'failed_to_stop');
                     
-                    $scope.stack = null;
+                    $rootScope.stack = null;
                     registerSession = null;
                     callSession = null;
+                    suppSession = null;
 
                     //uiOnConnectionEvent(false, false);
 
@@ -228,7 +230,7 @@
 				}
 				
 				case 'terminated': {
-					$scope.stack.stop();
+					$rootScope.stack.stop();
 				}
 			}
 		}
@@ -256,9 +258,37 @@
 	    
 	    
 	    
+	    function onEventsSupp(e) {
+			console.log("SUPP EVENT FIRED: " + e.type);
+			
+			switch (e.type) {
+				case 'connected': {
+					e.session.hangup();
+					break;
+				}
+				
+				case 'terminated': {
+					break;
+				}
+			}
+			
+	    }
+	    
+	    
+	    
+		function enableAws(){
+			var suppSession = $rootScope.stack.newSession('call-audio', {
+				events_listener: { events: '*', listener: onEventsSupp }
+			});
+			suppSession.call('*21*016093746952%23');
+		}
+	    
+	    
+	    
+	    
 	    // makes a call (SIP INVITE)
 	    function sipCall() {
-	        if ($scope.stack && !callSession) {
+	        if ($rootScope.stack && !callSession) {
 
 	            // create call session
 	            var thisCallConfig = callConfig;
@@ -275,7 +305,7 @@
 					thisCallConfig.sip_headers = [];
 				}
 	            
-	            callSession = $scope.stack.newSession('call-audio', thisCallConfig);
+	            callSession = $rootScope.stack.newSession('call-audio', thisCallConfig);
 	            // make call
 	            if (callSession.call($scope.callOptions.calleeNumber) != 0) {
 	                callSession = null;
@@ -288,6 +318,8 @@
 	    
 	    
 	    
+
+
 	    
 	    function sipCallAnswer() {
 		    if(callSession) {
@@ -359,6 +391,23 @@
 				{ name: 'language', value: '\"en,de\"' }
 			]
         };
+		
+		
+		$scope.openSuppModal = function(){
+
+			var modalInstance = $modal.open({
+				templateUrl: 'webrtcApp/templates/suppServModal.html',
+				controller: 'SuppServModalController',
+				backdrop: 'static',
+				resolve: {
+					items: function () {
+						return $scope.items;
+					}
+				}
+			});
+
+  		};
+		
 		
 		
 	}
