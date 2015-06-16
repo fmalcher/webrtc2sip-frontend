@@ -1,11 +1,12 @@
 var express = require('express');
 var cors = require('cors');
-var bodyParser       = require('body-parser');
+var bodyParser = require('body-parser');
 
 var app = express();
 var api = express.Router();
 
 var config = require('./config');
+var store = require('./modules/store');
 
 
 
@@ -22,8 +23,20 @@ app.use(express.static(__dirname + '/frontend'));
 
 
 
-
-api.get('/resource', function(req, res, next){ res.send('OK'); });
+//EXAMPLE RESOURCE
+api.get('/resource', function(req, res, next){
+	store.get(function(err, data){
+		//manipulate data...
+		
+		//save to store
+		store.set(data, function(err){
+			console.log(err);
+			
+			res.send();
+		});
+		
+	});
+});
 
 
 
