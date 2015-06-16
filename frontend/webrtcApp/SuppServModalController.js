@@ -55,6 +55,18 @@
 			
 			}else if(key == 'cfudisable'){
 				to = '%2321%23';
+			
+			}else if(key == 'cfnrenable' && $scope.fields.cfnrdest){
+				to = '*61*' + $scope.fields.cfnrdest + '%23';
+			
+			}else if(key == 'cfnrdisable'){
+				to = '%2361%23';
+			
+			}else if(key == 'cfbenable' && $scope.fields.cfbdest){
+				to = '*67*' + $scope.fields.cfbdest + '%23';
+			
+			}else if(key == 'cfbdisable'){
+				to = '%2367%23';
 			}
 			
 			console.log(to);

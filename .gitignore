@@ -1,3 +1,4 @@
 demo/
-webrtcApp/cred.js
-libs/sipml5-read-only/
+frontend/webrtcApp/cred.js
+frontend/libs/sipml5-read-only/**
+config.js

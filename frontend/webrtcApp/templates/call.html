@@ -1,0 +1,111 @@
+<!-- Call controls container -->
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			WebRTC Call
+			<button ng-if="appState.registered" type="button" class="pull-right btn btn-xs btn-primary" ng-model="callOptions.enableOIR" ng-class="{ 'active btn-warning': callOptions.enableOIR }" ng-click="callOptions.enableOIR = (callOptions.enableOIR) ? false : true">
+				<span ng-if="callOptions.enableOIR">
+					<span class="glyphicon glyphicon-eye-close"></span>
+					CLIR/OIR
+				</span>
+							
+				<span ng-if="!callOptions.enableOIR">
+					<span class="glyphicon glyphicon-eye-open"></span>
+					CLIP/OIP
+				</span>
+			</button>
+		</h3>
+	</div>
+	<div class="panel-body">
+
+		<div ng-if="!appState.registered" class="alert alert-warning" role="alert">
+			To do a call, please register first.
+		</div>
+
+
+		<div ng-if="appState.registered">
+			<div ng-if="!appState.incomingCall">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						
+						<div class="input-group">
+							<span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-earphone"></span></span>
+							<input ng-model="callOptions.calleeNumber" type="text" class="form-control" placeholder="Destination number">
+							<span class="input-group-btn">
+								<button ng-click="sipCall()" ng-class="{ 'disabled' : !callOptions.calleeNumber }" class="btn btn-success" type="button">Call</button>
+							</span>
+    					</div>
+    					
+					</div>
+				</div>
+				
+				<div class="row" style="margin-top: 20px;">
+					<div class="col-md-4 col-md-offset-4" style="text-align: center;">
+											
+						<button ng-click="sipHangup()" ng-if="appState.call" type="button" class="btn btn-danger" style="width: 200px;">
+							<span class="glyphicon glyphicon-arrow-down"></span>
+							<span>Hangup</span>
+						</button>
+						
+					</div>
+				</div>
+				
+								
+				<!--
+				<div ng-if="appState.call" class="row" style="margin-top: 20px;">
+					<div class="col-md-4 col-md-offset-4" style="text-align: center;">
+						<button ng-click="sipTransfer()" type="button" class="btn btn-primary">
+							<span class="glyphicon glyphicon-share-alt"></span>
+							<span>Transfer call</span>
+						</button>
+						
+						<button ng-click="sipHold()" ng-if="!appState.hold" type="button" class="btn btn-primary">
+							<span class="glyphicon glyphicon-pause"></span>
+							<span>Hold</span>
+						</button>
+						
+						<button ng-click="sipResume()" ng-if="appState.hold" type="button" class="btn btn-primary">
+							<span class="glyphicon glyphicon-play"></span>
+							<span>Resume</span>
+						</button>
+						
+					</div>
+				</div>
+				-->
+				
+				
+			</div>
+			
+			
+			<div ng-if="appState.incomingCall">
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4" style="text-align: center;">
+						<button ng-click="sipCallAnswer()" type="button" class="btn btn-success" style="width: 200px;">
+							<span class="glyphicon glyphicon-earphone"></span>
+							<span>Answer</span>
+						</button>
+						
+						<button ng-click="sipHangup()" type="button" class="btn btn-danger" style="width: 200px;">
+							<span class="glyphicon glyphicon-arrow-down"></span>
+							<span>Dismiss</span>
+						</button>
+						
+					</div>
+				</div>
+				
+			</div>
+			
+			
+		</div>
+
+
+	</div>
+</div>
+
+
+	</div>
+</div>
+
