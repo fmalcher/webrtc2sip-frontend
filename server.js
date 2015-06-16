@@ -7,6 +7,7 @@ var api = express.Router();
 
 var config = require('./config');
 var store = require('./modules/store');
+var accController = require('./controllers/accController');
 
 
 
@@ -24,7 +25,15 @@ app.use(express.static(__dirname + '/frontend'));
 
 
 //EXAMPLE RESOURCE
-api.get('/resource', function(req, res, next){
+api.get('/account', accController.list);
+api.get('/account/:id', accController.getOne);
+/*api.post('/account', accController.add);
+api.put('/account/:id', accController.edit);
+api.delete('/account/:id', accController.delete);*/
+
+
+
+/*function(req, res, next){
 	store.get(function(err, data){
 		//manipulate data...
 		
@@ -36,7 +45,7 @@ api.get('/resource', function(req, res, next){
 		});
 		
 	});
-});
+});*/
 
 
 
