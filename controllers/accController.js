@@ -30,6 +30,9 @@ exports.getOne = function(req, res, next) {
 			return next(new Error('Account not found'));
 		}
 		
-		res.json(data.accounts[req.params.id]);
+		var acc = data.accounts[req.params.id];
+		acc.id = req.params.id;
+		
+		res.json(acc);
 	});	
 }

@@ -32,7 +32,7 @@
 			    
 	    // makes a call (SIP INVITE)
 	    function sipCall() {
-	        if ($rootScope.stack && !$rootScope.callSession) {
+	        if($rootScope.stack && !$rootScope.callSession) {
 
 	            // create call session
 	            var thisCallConfig = $rootScope.callConfig;
@@ -41,7 +41,7 @@
 	            if($scope.callOptions.enableOIR){
 		            
 		            thisCallConfig.sip_headers = [
-						{ name: 'P-Preferred-Identity', value: '<' + curSIPcred.impu + '>', session: false },
+						{ name: 'P-Preferred-Identity', value: '<' + $rootScope.account.cred.impu + '>', session: false },
 						{ name: 'Privacy', value: 'header', session: false }
 					];
 		            

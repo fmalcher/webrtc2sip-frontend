@@ -14,10 +14,14 @@
 				template: '',
 			}).
 	
-
 			when('/call', {
 				templateUrl: 'webrtcApp/templates/call.html',
 				controller: 'CallController',
+			}).
+			
+			when('/accounts', {
+				templateUrl: 'webrtcApp/templates/accounts.html',
+				controller: 'AccountsController',
 			});
 			
 	}

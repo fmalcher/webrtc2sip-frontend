@@ -4,9 +4,21 @@
 	angular.module('webrtcApp')
 		.controller('MainController', MainController);
 	
-	MainController.$inject = ['$scope', '$rootScope', 'scopeService', 'ngAudio', '$modal'];
+	MainController.$inject = ['$scope', '$rootScope', 'scopeService', 'ngAudio', '$modal', 'appConfig', 'accountService'];
 	
-	function MainController($scope, $rootScope, scopeService, ngAudio, $modal) {		
+	function MainController($scope, $rootScope, scopeService, ngAudio, $modal, appConfig, accountService) {		
+		
+		//get account list
+		accountService.list().then(function(d){
+			$scope.accounts = d.data;
+			
+			//take first as default
+			accountService.getOne(Object.keys($scope.accounts)[0]).then(function(d){
+				$rootScope.account = d.data;
+			});
+		});
+		
+
 
 		$rootScope.stack = null;
 
@@ -31,11 +43,7 @@
 		
 		$scope.sound.ringing = ngAudio.load('media/ringing.mp3');
 		$scope.sound.ringing.loop = true;
-		
-		
-		
-		$scope.SIPcred = SIPcred;
-		$rootScope.curSIPcred = $scope.SIPcred[0];
+
 		
 		
 		var registerSession;		
@@ -52,11 +60,13 @@
 	    }
 		
 		
-		function setCred(index){
-			if(!$scope.SIPcred[index]) return false;
-
-			$rootScope.curSIPcred = $scope.SIPcred[index];
-			sipUnregister();
+		$scope.setAccount = function(id){
+			accountService.getOne(id).then(function(d){
+				sipUnregister();
+				$rootScope.account = d.data;
+				//createSipStack();
+			});
+			
 		}
 		
 		
@@ -73,8 +83,8 @@
 
 		}
 
-		
-		$scope.sipUnregister = function(){
+		$scope.sipUnregister = sipUnregister;
+		function sipUnregister(){
 			if(!$rootScope.stack) return false;
 			
 			setAppState('unregistering', 1);
@@ -87,9 +97,10 @@
 		}
 		
 		
-		$scope.createSipStack = function(){
+		$scope.createSipStack = createSipStack;
+		function createSipStack(){
 			
-			var cred = $rootScope.curSIPcred;
+			var cred = $rootScope.account.cred;
 			
 			$rootScope.stack = new SIPml.Stack({
 				realm: cred.realm,
@@ -97,9 +108,9 @@
 				impu: cred.impu,
 				password: cred.password,
 				display_name: '',
-				websocket_proxy_url: SIPcredGlobal.websocket_proxy_url,
-				outbound_proxy_url: SIPcredGlobal.outbound_proxy_url,
-				ice_servers: SIPcredGlobal.ice_servers, 
+				websocket_proxy_url: appConfig.websocket_proxy_url,
+				outbound_proxy_url: appConfig.outbound_proxy_url,
+				ice_servers: appConfig.ice_servers, 
 				enable_rtcweb_breaker: true,
 				events_listener: { events: '*', listener: onEventsStack },
 				sip_headers: [
