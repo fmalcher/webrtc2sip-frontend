@@ -1,13 +1,17 @@
 var express = require('express');
 var cors = require('cors');
+var bodyParser       = require('body-parser');
 
 var app = express();
+var api = express.Router();
+
 var config = require('./config');
 
 
-app.use(cors({ origin: '*' }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
+
+api.use(cors({ origin: '*' }));
+api.use(bodyParser.json());
+api.use(bodyParser.urlencoded({
     extended: true
 }));
 
@@ -19,12 +23,13 @@ app.use(express.static(__dirname + '/frontend'));
 
 
 
-api.get('/resource', function(req, res, next){});
+api.get('/resource', function(req, res, next){ res.send('OK'); });
 
 
 
 
-
+//assign api router to /api
+app.use('/api', api);
 
 //start server
 app.listen(config.port, function(err){

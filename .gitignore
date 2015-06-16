@@ -1,4 +1,4 @@
-demo/
+node_modules/
 frontend/webrtcApp/cred.js
 frontend/libs/sipml5-read-only/**
 config.js
