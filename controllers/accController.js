@@ -36,3 +36,26 @@ exports.getOne = function(req, res, next) {
 		res.json(acc);
 	});	
 }
+
+
+
+
+exports.delete = function(req, res, next) {
+	
+	store.get(function(err, data){
+		if(err) return next(err);
+		
+		if(!data.accounts.hasOwnProperty(req.params.id)){
+			return next(new Error('Account not found'));
+		}
+		
+		delete data.accounts[req.params.id];
+		
+		//save to store
+		store.set(data, function(err){
+			if(err) return next(err);
+			
+			res.send();
+		});
+	});	
+}

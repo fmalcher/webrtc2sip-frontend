@@ -33,7 +33,7 @@
 <script src="webrtcApp/MainController.js"></script>
 <script src="webrtcApp/IndexController.js"></script>
 <script src="webrtcApp/CallController.js"></script>
-<script src="webrtcApp/AccountsController.js"></script>
+<script src="webrtcApp/AccountControllers.js"></script>
 <script src="webrtcApp/SuppServModalController.js"></script>
 
 
@@ -59,7 +59,7 @@
       
       <ul class="nav navbar-nav navbar-left">
 
-	  	<li><!-- ng-class="{ 'disabled' : !appState.initialized || !appState.registered }" -->
+	  	<li ng-class="{ 'disabled' : !appState.initialized || !appState.registered }">
 	  		<button type="button" class="btn btn-primary navbar-btn" ng-click="openSuppModal()" ><span class="glyphicon glyphicon-cog"></span> Services</button>
 	  	</li>       
       </ul>

@@ -8,4 +8,8 @@ angular.module('webrtcApp')
 	this.getOne = function(id) {
 		return $http.get(appConfig.backend + '/account/' + id);
 	}
+	
+	this.delete = function(id) {
+		return $http.delete(appConfig.backend + '/account/' + id);
+	}
 });

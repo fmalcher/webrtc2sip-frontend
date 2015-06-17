@@ -27,9 +27,9 @@ app.use(express.static(__dirname + '/frontend'));
 //EXAMPLE RESOURCE
 api.get('/account', accController.list);
 api.get('/account/:id', accController.getOne);
-/*api.post('/account', accController.add);
-api.put('/account/:id', accController.edit);
-api.delete('/account/:id', accController.delete);*/
+//api.post('/account', accController.add);
+//api.put('/account/:id', accController.edit);
+api.delete('/account/:id', accController.delete);
 
 
 
