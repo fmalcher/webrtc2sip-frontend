@@ -8,15 +8,37 @@
 	
 	function MainController($scope, $rootScope, scopeService, ngAudio, $modal, appConfig, accountService) {		
 		
-		//get account list
-		accountService.list().then(function(d){
-			$scope.accounts = d.data;
+		
+		$scope.refreshAccounts = function() {
 			
-			//take first as default
-			accountService.getOne(Object.keys($scope.accounts)[0]).then(function(d){
-				$rootScope.account = d.data;
+			//get account list
+			accountService.list().then(function(d){
+				$scope.accounts = d.data;
+				
+				if(!Object.keys($scope.accounts).length) return; //end function if there are no accounts
+				
+														
+				var defaultId;
+				
+				//if there's an account in rootScope check whether it is still available. If not available or no acc in rootScope, choose first one as default.
+				if($rootScope.account && $scope.accounts.hasOwnProperty($rootScope.account.id)) {
+					defaultId = $rootScope.account.id;
+				} else {
+					defaultId = Object.keys($scope.accounts)[0];
+				}
+				
+				accountService.getOne(defaultId).then(function(d){
+					$rootScope.account = d.data;
+				});
 			});
+		}
+		$scope.refreshAccounts();
+		
+		
+		$scope.$on('accountsUpdated', function(){
+			$scope.refreshAccounts();
 		});
+		
 		
 
 

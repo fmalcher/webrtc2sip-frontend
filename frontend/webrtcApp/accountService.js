@@ -1,5 +1,5 @@
 angular.module('webrtcApp')
-	.service('accountService', function($http, appConfig) {
+	.service('accountService', function($http, appConfig, $rootScope) {
 
 	this.list = function() {
 		return $http.get(appConfig.backend + '/account');

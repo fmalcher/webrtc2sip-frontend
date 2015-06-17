@@ -4,8 +4,8 @@
 	angular.module('webrtcApp')
 		.controller('AccountsController', AccountsController);
 	
-	AccountsController.$inject = ['$scope', 'accountService', '$modal'];
-	function AccountsController($scope, accountService, $modal) {
+	AccountsController.$inject = ['$scope', 'accountService', '$modal', '$rootScope'];
+	function AccountsController($scope, accountService, $modal, $rootScope) {
 		
 		$scope.refresh = refresh;
 		function refresh() {
@@ -31,6 +31,7 @@
 			modal.result.then(function() {
 				accountService.delete(accid).then(function(d){
 					refresh();
+					$rootScope.$broadcast('accountsUpdated');
 				});
 			});
 		}
