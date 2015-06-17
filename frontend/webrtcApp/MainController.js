@@ -301,22 +301,6 @@
 				}
 			}
 	    }
-		
-		
-		$scope.openSuppModal = function() {
-			var modalInstance = $modal.open({
-				templateUrl: 'webrtcApp/templates/suppServModal.html',
-				controller: 'SuppServModalController',
-				backdrop: 'static',
-				resolve: {
-					items: function () {
-						return $scope.items;
-					}
-				}
-			});
-
-  		};
-		
 	    		
 	}
 

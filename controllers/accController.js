@@ -39,7 +39,6 @@ exports.getOne = function(req, res, next) {
 
 
 
-
 exports.delete = function(req, res, next) {
 	
 	store.get(function(err, data){
@@ -58,4 +57,33 @@ exports.delete = function(req, res, next) {
 			res.send();
 		});
 	});	
+}
+
+
+
+exports.add = function(req, res, next) {
+	
+	store.get(function(err, data){
+		if(err) return next(err);
+		
+		//add new account to store object
+		data.accounts[randomString(7)] = req.body.account;
+		
+		//save to store
+		store.set(data, function(err){
+			if(err) return next(err);
+			
+			res.send();
+		});
+	});	
+}
+
+
+
+
+
+
+
+function randomString(bytes){
+	return require('crypto').randomBytes(bytes).toString('hex');
 }

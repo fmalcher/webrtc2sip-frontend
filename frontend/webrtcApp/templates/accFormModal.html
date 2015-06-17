@@ -1,0 +1,59 @@
+<div class="modal-header">
+	<h3 class="modal-title">
+		<span ng-if="mode == 'edit'">Edit account</span>
+		<span ng-if="mode == 'add'">Add account</span>
+	</h3>
+</div>
+<div class="modal-body">
+
+<form>
+	<div class="form-group">
+		<div class="input-group">
+			<span class="input-group-addon"><strong>Name</strong></span>
+			<input ng-model="fields.display" type="text" class="form-control" placeholder="Display name">
+		</div>
+	</div>
+	
+	<div class="form-group">	
+		<div class="input-group">
+			<span class="input-group-addon"><strong>Realm</strong></span>
+			<input ng-model="fields.realm" type="text" class="form-control" placeholder="e.g. tel.t-online.de">
+		</div>
+	</div>
+	
+	<div class="form-group">	
+		<div class="input-group">
+			<span class="input-group-addon"><strong>IMPI</strong></span>
+			<input ng-model="fields.impi" type="text" class="form-control" placeholder="IMPI">
+		</div>
+	</div>
+		
+	<div class="form-group">
+		<div class="input-group">
+			<span class="input-group-addon"><strong>IMPU</strong></span>
+			<input ng-model="fields.impu" type="text" class="form-control" placeholder="IMPU">
+		</div>
+	</div>
+	
+	<div class="form-group">	
+		<div class="input-group">
+			<span class="input-group-addon"><strong>Password</strong></span>
+			<input ng-model="fields.password" type="password" class="form-control" placeholder="Password">
+		</div>
+	</div>
+
+</form>
+
+
+
+</div>
+
+
+<div class="modal-footer">
+	<button class="btn btn-success" ng-click="$close(fields)">Save</button>
+	<button class="btn btn-danger" ng-click="$dismiss()">Cancel</button>
+</div>
+
+
+
+

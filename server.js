@@ -27,25 +27,9 @@ app.use(express.static(__dirname + '/frontend'));
 //EXAMPLE RESOURCE
 api.get('/account', accController.list);
 api.get('/account/:id', accController.getOne);
-//api.post('/account', accController.add);
+api.post('/account', accController.add);
 //api.put('/account/:id', accController.edit);
 api.delete('/account/:id', accController.delete);
-
-
-
-/*function(req, res, next){
-	store.get(function(err, data){
-		//manipulate data...
-		
-		//save to store
-		store.set(data, function(err){
-			console.log(err);
-			
-			res.send();
-		});
-		
-	});
-});*/
 
 
 

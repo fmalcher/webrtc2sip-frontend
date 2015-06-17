@@ -38,6 +38,43 @@
 		
 		
 		
+		
+		
+		$scope.addAcc = function() {
+			var modal = $modal.open({
+				templateUrl: 'webrtcApp/templates/accFormModal.html',
+				controller: function($scope) {
+					$scope.mode = 'add';
+					$scope.fields = {};
+				},
+			});
+	
+			modal.result.then(function(fields) {
+				console.log(fields);
+				
+				//assemble account object
+				var account = {
+					display: fields.display,
+					cred: {
+						realm: fields.realm,
+						impi: fields.impi,
+						impu: fields.impu,
+						password: fields.password
+					}
+				}
+				
+				accountService.add(account).then(function(d){
+					refresh();
+					$rootScope.$broadcast('accountsUpdated');
+				});
+			});
+		}
+		
+		
+		
+		
+		
+		
 	}
 	
 	

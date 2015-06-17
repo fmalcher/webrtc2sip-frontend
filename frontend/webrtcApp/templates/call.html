@@ -6,17 +6,24 @@
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			WebRTC Call
-			<button ng-if="appState.registered" type="button" class="pull-right btn btn-xs btn-primary" ng-model="callOptions.enableOIR" ng-class="{ 'active btn-warning': callOptions.enableOIR }" ng-click="callOptions.enableOIR = (callOptions.enableOIR) ? false : true">
-				<span ng-if="callOptions.enableOIR">
-					<span class="glyphicon glyphicon-eye-close"></span>
-					CLIR/OIR
-				</span>
-							
-				<span ng-if="!callOptions.enableOIR">
-					<span class="glyphicon glyphicon-eye-open"></span>
-					CLIP/OIP
-				</span>
-			</button>
+			<span ng-if="appState.registered" class="pull-right">
+				<button type="button" ng-click="openSuppModal()" class="btn btn-xs btn-default">
+				<span class="glyphicon glyphicon-cog"></span>
+				Services
+				</button>
+
+				<button type="button" class="btn btn-xs btn-success" ng-model="callOptions.enableOIR" ng-class="{ 'active btn-warning': callOptions.enableOIR }" ng-click="callOptions.enableOIR = (callOptions.enableOIR) ? false : true">
+					<span ng-if="callOptions.enableOIR">
+						<span class="glyphicon glyphicon-eye-close"></span>
+						CLIR/OIR
+					</span>
+								
+					<span ng-if="!callOptions.enableOIR">
+						<span class="glyphicon glyphicon-eye-open"></span>
+						CLIP/OIP
+					</span>
+				</button>
+			</span>
 		</h3>
 	</div>
 	<div class="panel-body">

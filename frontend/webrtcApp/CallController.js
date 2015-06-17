@@ -109,6 +109,19 @@
 	            }
 	        }
 	    }
+	    
+	    
+	    
+	    
+	    $scope.openSuppModal = function() {
+			var modalInstance = $modal.open({
+				templateUrl: 'webrtcApp/templates/suppServModal.html',
+				controller: 'SuppServModalController'
+			});
+
+  		};
+	    
+	    
 
 
 	}
