@@ -1,4 +1,8 @@
-fs = require('fs');
+var fs = require('fs');
+var touch = require('touch');
+
+touch('store.json');
+
 
 exports.set = function(data, callback) {
 	fs.writeFile('store.json', JSON.stringify(data), function(err) {

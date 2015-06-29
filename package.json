@@ -13,7 +13,8 @@
 	"dependencies": {
 		"express": "*",
 		"body-parser": "*",
-		"cors": "*"
+		"cors": "*",
+		"touch": "*"
 	},
 
 	"scripts": {
