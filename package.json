@@ -1,7 +1,7 @@
 {
-	"name": "webrtcapp",
+	"name": "webrtcApp",
 	"version": "1.0.0",
-	"description": "WebRTC Frontend",
+	"description": "webrtc2sip Frontend",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/fmalcher/webrtcApp"
@@ -13,8 +13,7 @@
 	"dependencies": {
 		"express": "*",
 		"body-parser": "*",
-		"cors": "*",
-		"touch": "*"
+		"cors": "*"
 	},
 
 	"scripts": {
