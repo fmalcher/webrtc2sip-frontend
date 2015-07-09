@@ -1,8 +1,11 @@
 var fs = require('fs');
 
-var storefile = 'store.json';
-var initialfile = 'store.json.initial';
+var path = __dirname + '/../';
 
+var storefile = path + 'store.json';
+var initialfile = path + 'store.json.initial';
+
+console.log(storefile);
 
 //initialize store file
 fs.exists(storefile, function(exists){
