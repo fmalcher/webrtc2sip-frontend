@@ -4,9 +4,9 @@
 	angular.module('webrtcApp')
 		.controller('CallController', CallController);
 	
-	CallController.$inject = ['$scope', '$rootScope', '$modal', 'scopeService', 'ngAudio'];
+	CallController.$inject = ['$scope', '$rootScope', '$modal', 'scopeService', 'ngAudio', 'appConfig'];
 	
-	function CallController($scope, $rootScope, $modal, scopeService, ngAudio) {		
+	function CallController($scope, $rootScope, $modal, scopeService, ngAudio, appConfig) {		
 		
 
 		$scope.sipCall = sipCall;
@@ -17,7 +17,7 @@
 		$scope.sipResume = sipResume;
 		
 		$scope.callOptions = {
-			calleeNumber: "03413062286",
+			calleeNumber: appConfig.defaultCalleeNumber,
 			enableOIR: false
 		};
 		
