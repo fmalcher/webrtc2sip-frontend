@@ -68,18 +68,17 @@
 	  	</li>
 
         <li>
-        	<button ng-class="{ 'disabled' : !appState.initialized || appState.registered }" type="button" class="btn btn-success navbar-btn" ng-click="createSipStack()"><span class="glyphicon glyphicon-log-in"></span> Register</button>
-        	<button ng-class="{ 'disabled' : !appState.initialized || !appState.registered }" type="button" class="btn btn-danger navbar-btn" ng-click="sipUnregister()"><span class="glyphicon glyphicon-log-out"></span> Unregister</button>
-        </li>
-        
-        
-        <li>
 			<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span ng-class="{ 'text-success' : appState.registered }" class="glyphicon glyphicon-user"></span> {{ account.display }} <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
 				<li><a ng-repeat="(id, display) in accounts" ng-click="setAccount(id)">{{display}}</a></li>
 				<li role="separator" class="divider"></li>
 				<li><a ng-href="#/accounts"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Edit accounts...</a></li>
           </ul>
+        </li>
+
+        <li>
+        	<button ng-class="{ 'disabled' : !appState.initialized || appState.registered }" type="button" class="btn btn-success navbar-btn" ng-click="createSipStack()"><span class="glyphicon glyphicon-log-in"></span> Register</button>
+        	<button ng-class="{ 'disabled' : !appState.initialized || !appState.registered }" type="button" class="btn btn-danger navbar-btn" ng-click="sipUnregister()"><span class="glyphicon glyphicon-log-out"></span> Unregister</button>
         </li>
        
       </ul>
